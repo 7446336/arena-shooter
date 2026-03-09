@@ -23,22 +23,22 @@ justify-content:space-between;
 padding-top:20px;
 }
 .joystick{
-width:130px;
-height:130px;
-border-radius:50%;
-background:#444;
-position:relative;
-touch-action:none;
+  width:220px;
+  height:220px;
+  border-radius:50%;
+  background:#444;
+  position:relative;
+  touch-action:none;
 }
 .joystick::after{
-content:"";
-width:60px;
-height:60px;
-background:#888;
-border-radius:50%;
-position:absolute;
-top:35px;
-left:35px;
+  content:"";
+  width:100px;
+  height:100px;
+  background:#888;
+  border-radius:50%;
+  position:absolute;
+  top:60px;
+  left:60px;
 }
 </style>
 </head>
@@ -96,7 +96,6 @@ canvas.addEventListener("mousemove",e=>{
 canvas.addEventListener("mousedown",()=>{
   if(!autoShootInterval) autoShootInterval=setInterval(shootBullet,200);
 });
-
 canvas.addEventListener("mouseup",()=>{
   clearInterval(autoShootInterval);
   autoShootInterval=null;
@@ -122,21 +121,26 @@ function setupJoystick(el,callback){
     let touch=e.touches[0];
     let x=touch.clientX-rect.left-rect.width/2;
     let y=touch.clientY-rect.top-rect.height/2;
-    let dist=Math.hypot(x,y), max=45;
+    let dist=Math.hypot(x,y), max=80;
     if(dist>max){ x=x/dist*max; y=y/dist*max; }
     callback(x/max,y/max);
   });
   el.addEventListener("touchend",()=>{active=false; callback(0,0);});
 }
 
-setupJoystick(document.getElementById("moveJoy"),(x,y)=>{moveVector.x=x; moveVector.y=y;});
-setupJoystick(document.getElementById("shootJoy"),(x,y)=>{
-  shootVector.x=x; shootVector.y=y;
-  if(x!==0||y!==0){
-    mouseX=player.x+x*100; mouseY=player.y+y*100;
+// MOVE joystick only moves player
+setupJoystick(document.getElementById("moveJoy"), (x, y) => { moveVector.x = x; moveVector.y = y; });
+
+// SHOOT joystick only shoots
+setupJoystick(document.getElementById("shootJoy"), (x, y) => {
+  shootVector.x = x; shootVector.y = y;
+  if(x !== 0 || y !== 0){
+    mouseX = player.x + x*100;
+    mouseY = player.y + y*100;
     if(!autoShootInterval) autoShootInterval=setInterval(shootBullet,200);
-  }else{
-    clearInterval(autoShootInterval); autoShootInterval=null;
+  } else {
+    clearInterval(autoShootInterval);
+    autoShootInterval=null;
   }
 });
 
@@ -145,15 +149,12 @@ const abilities=[
 {name:"Normal Damage",rarity:"Normal",desc:"+3 Damage",effect:()=>player.damage+=3},
 {name:"Normal Speed",rarity:"Normal",desc:"+1 Speed",effect:()=>player.speed=Math.min(player.speed+1,20)},
 {name:"Normal Health",rarity:"Normal",desc:"+10 Max Health",effect:()=>{player.maxHealth+=10;player.health+=10}},
-
 {name:"Rare Damage",rarity:"Rare",desc:"+6 Damage",effect:()=>player.damage+=6},
 {name:"Rare Speed",rarity:"Rare",desc:"+2 Speed",effect:()=>player.speed=Math.min(player.speed+2,20)},
 {name:"Rare Health",rarity:"Rare",desc:"+20 Max Health",effect:()=>{player.maxHealth+=20;player.health+=20}},
-
 {name:"Mystic Damage",rarity:"Mystic",desc:"+12 Damage",effect:()=>player.damage+=12},
 {name:"Mystic Speed",rarity:"Mystic",desc:"+3 Speed",effect:()=>player.speed=Math.min(player.speed+3,20)},
 {name:"Mystic Health",rarity:"Mystic",desc:"+40 Max Health",effect:()=>{player.maxHealth+=40;player.health+=40}},
-
 {name:"Divine Damage",rarity:"Divine",desc:"+25 Damage",effect:()=>player.damage+=25},
 {name:"Divine Speed",rarity:"Divine",desc:"+5 Speed",effect:()=>player.speed=Math.min(player.speed+5,20)},
 {name:"Divine Health",rarity:"Divine",desc:"+100 Max Health",effect:()=>{player.maxHealth+=100;player.health+=100}}
@@ -191,7 +192,7 @@ function spawnEnemy(boss=false){
   let y=Math.random()*canvas.height;
   let hp=(30+level*5)*enemyHPMultiplier;
   let r=15,speed=1.5;
-  if(boss){hp*=60;r=40;speed=1; boss=true; let b={nextSpike:90}; Object.assign(this,b);}
+  if(boss){hp*=60;r=40;speed=1; boss=true;}
   enemies.push({x,y,hp,r,speed,boss,originalSpeed:speed,nextSpike:90});
 }
 
