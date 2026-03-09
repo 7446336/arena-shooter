@@ -135,11 +135,13 @@ setupJoystick(document.getElementById("moveJoy"), (x, y) => {
     moveVector.y = y;
 });
 
-// SHOOT joystick (only shoots)
+// SHOOT joystick (only shoots, fixes auto-left bug)
 setupJoystick(document.getElementById("shootJoy"), (x, y) => {
     if(x !== 0 || y !== 0){
+        // Update shooting direction only while joystick is touched
         mouseX = player.x + x * 150;
         mouseY = player.y + y * 150;
+
         if(!autoShootInterval) autoShootInterval = setInterval(shootBullet, 200);
     } else {
         clearInterval(autoShootInterval);
