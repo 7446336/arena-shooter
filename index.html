@@ -23,22 +23,23 @@ justify-content:space-between;
 padding-top:20px;
 }
 .joystick{
-  width:220px;
-  height:220px;
+  width:260px;
+  height:260px;
   border-radius:50%;
   background:#444;
   position:relative;
   touch-action:none;
+  margin:10px;
 }
 .joystick::after{
   content:"";
-  width:100px;
-  height:100px;
+  width:120px;
+  height:120px;
   background:#888;
   border-radius:50%;
   position:absolute;
-  top:60px;
-  left:60px;
+  top:70px;
+  left:70px;
 }
 </style>
 </head>
@@ -128,20 +129,22 @@ function setupJoystick(el,callback){
   el.addEventListener("touchend",()=>{active=false; callback(0,0);});
 }
 
-// MOVE joystick only moves player
-setupJoystick(document.getElementById("moveJoy"), (x, y) => { moveVector.x = x; moveVector.y = y; });
+// MOVE joystick (only moves player)
+setupJoystick(document.getElementById("moveJoy"), (x, y) => {
+    moveVector.x = x;
+    moveVector.y = y;
+});
 
-// SHOOT joystick only shoots
+// SHOOT joystick (only shoots)
 setupJoystick(document.getElementById("shootJoy"), (x, y) => {
-  shootVector.x = x; shootVector.y = y;
-  if(x !== 0 || y !== 0){
-    mouseX = player.x + x*100;
-    mouseY = player.y + y*100;
-    if(!autoShootInterval) autoShootInterval=setInterval(shootBullet,200);
-  } else {
-    clearInterval(autoShootInterval);
-    autoShootInterval=null;
-  }
+    if(x !== 0 || y !== 0){
+        mouseX = player.x + x * 150;
+        mouseY = player.y + y * 150;
+        if(!autoShootInterval) autoShootInterval = setInterval(shootBullet, 200);
+    } else {
+        clearInterval(autoShootInterval);
+        autoShootInterval = null;
+    }
 });
 
 // ABILITIES
